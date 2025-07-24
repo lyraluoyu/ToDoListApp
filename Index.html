@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>To-Do List App</title>
+  <style>
+    html,
+    body {
+      padding: 0;
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #d4f5d4;
+    }
+
+    body {
+      max-width: 400px;
+      margin: 50px auto;
+      padding: 10px;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    #inputContainer {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    #inputContainer input[type="text"] {
+      width: 70%;
+      padding: 8px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      outline: none;
+    }
+
+    #inputContainer button {
+      padding: 9px 15px;
+      font-size: 16px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    #inputContainer button:hover {
+      background-color: #45a049;
+    }
+
+    #prioritySelect {
+      width: 370px !important;
+      margin: 0 auto;
+      display: block;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      background-color: #f9f9f9;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      outline: none;
+      width: 100%;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg width='12' height='8' viewBox='0 0 12 8' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 8L0.803848 0.5L11.1962 0.5L6 8Z' fill='%23666'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      background-size: 12px 8px;
+    }
+
+    #priority:focus {
+      box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.3);
+    }
+
+    ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    li {
+      width: 370px !important;
+      margin: 0 auto;
+      display: block;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: white;
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      word-break: break-word;
+      transition: all 0.3s ease;
+    }
+
+    .task-content {
+      display: flex;
+      align-items: center;
+      flex: 1;
+      gap: 10px;
+      cursor: pointer;
+    }
+
+    .priority-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .priority-dot.low {
+      background-color: green;
+    }
+
+    .priority-dot.medium {
+      background-color: orange;
+    }
+
+    .priority-dot.high {
+      background-color: red;
+    }
+
+    .task-text {
+      flex: 1;
+      word-break: break-word;
+      white-space: normal;
+    }
+
+    .task-text.done {
+      text-decoration: line-through;
+      color: gray;
+      font-style: italic;
+    }
+
+    .delete-btn {
+      margin-left: 10px;
+      background-color: #ff4d4f;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 6px 10px;
+      cursor: pointer;
+    }
+
+    .delete-btn:hover {
+      background-color: #e63946;
+    }
+
+    .low {
+      background-color: #e6f5ea;
+    }
+
+    .medium {
+      background-color: #fff6e0;
+    }
+
+    .high {
+      background-color: #ffe6e6;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>To-Do List</h1>
+  <div id="inputContainer">
+    <input type="text" id="todoInput" placeholder="Enter a new task" />
+    <button id="addBtn">Add</button>
+  </div>
+
+  <select id="prioritySelect">
+    <option value="low">Low</option>
+    <option value="medium" selected>Medium</option>
+    <option value="high">High</option>
+  </select>
+
+  <ul id="todoList"></ul>
+
+  <script>
+    const input = document.getElementById('todoInput');
+    const addBtn = document.getElementById('addBtn');
+    const todoList = document.getElementById('todoList');
+    const prioritySelect = document.getElementById('prioritySelect');
+
+    function addTodo() {
+      const text = input.value.trim();
+      if (!text) {
+        alert('Please enter a task');
+        return;
+      }
+
+      const priority = prioritySelect.value;
+
+      const li = document.createElement('li');
+      li.classList.add(priority);
+
+      const content = document.createElement('div');
+      content.className = 'task-content';
+
+      const dot = document.createElement('div');
+      dot.className = `priority-dot ${priority}`;
+
+      const span = document.createElement('span');
+      span.textContent = text;
+      span.className = 'task-text';
+
+      content.appendChild(dot);
+      content.appendChild(span);
+
+      content.addEventListener('click', () => {
+        span.classList.toggle('done');
+      });
+
+      const delBtn = document.createElement('button');
+      delBtn.textContent = 'Delete';
+      delBtn.className = 'delete-btn';
+      delBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        todoList.removeChild(li);
+      });
+
+      li.appendChild(content);
+      li.appendChild(delBtn);
+      todoList.appendChild(li);
+
+      input.value = '';
+      input.focus();
+    }
+
+    addBtn.addEventListener('click', addTodo);
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        addTodo();
+      }
+    });
+  </script>
+
+</body>
+
+</html>
